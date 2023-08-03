@@ -17,6 +17,7 @@ class Img:
         self.path = Path(path)
         self.data = rgb2gray(imread(path)).tolist()
 
+
     def save_img(self):
         """
         Do not change the below implementation
@@ -58,8 +59,13 @@ class Img:
         # TODO remove the `raise` below, and write your implementation
         raise NotImplementedError()
 
-
     def concat(self, other_img, direction='horizontal'):
+        if not isinstance(other_img, Img):
+            raise TypeError("The 'other_img' parameter must be an instance of the Img Class.")
+
+        if direction not in ['horizontal', 'vertical']:
+            raise ValueError("Invalid 'direction' parameter. It should be either 'horizontal' or 'vertical'.")
+
         if direction == 'horizontal':
             if len(self.data) != len(other_img.data):
                 # Resize images to have the same height
@@ -69,6 +75,8 @@ class Img:
 
             combined_data = []
             for row_self, row_other in zip(self.data, other_img.data):
+                if len(row_self) != len(row_other):
+                    raise RuntimeError("Both images must have the same width when concatenating horizontally.")
                 combined_row = row_self + row_other
                 combined_data.append(combined_row)
 
@@ -84,19 +92,21 @@ class Img:
                 for i in range(len(other_img.data)):
                     other_img.data[i] = other_img.data[i][:min_width]
 
+            if len(self.data[0]) != len(other_img.data[0]):
+                raise RuntimeError("Both images must have the same width when concatenating vertically.")
+
             # Combine rows of both images
             combined_data = self.data + other_img.data
 
             # Store the concatenated data in the instance attribute
             self.data = combined_data
 
-
     def segment(self):
         # TODO remove the `raise` below, and write your implementation
         raise NotImplementedError()
 
-my_img =Img('../polybot/test/beatles.jpeg')
-another_image = Img('../polybot/test/beatles.jpeg')
-my_img.concat(another_image)
-my_img.save_img()
+# my_img =Img('test/beatles.jpeg')
+# another_image = Img('test/beatles.jpeg')
+# my_img.concat(another_image)
+# my_img.save_img()
 
