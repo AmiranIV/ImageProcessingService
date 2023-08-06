@@ -91,7 +91,7 @@ class ImageProcessingBot(Bot):
                 caption = msg["caption"]
                 if "concat" in caption.lower():
                     self.process_image(msg)
-                elif "contur" in caption.lower():
+                if "contour" in caption.lower():
                     self.process_image_contur(msg)
             else:
                 logger.info("Received photo without a caption.")
