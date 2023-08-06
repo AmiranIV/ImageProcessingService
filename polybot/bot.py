@@ -90,7 +90,9 @@ class ImageProcessingBot(Bot):
             if "caption" in msg:
                 caption = msg["caption"]
                 if "concat" in caption.lower():
-                    self.process_image(msg)  # Process the photo only if 'concat' is present in the caption
+                    self.process_image(msg)
+                elif "contur" in caption.lower(msg):
+                    self.process_image_contur(msg)
             else:
                 logger.info("Received photo without a caption.")
         elif "text" in msg:
@@ -108,6 +110,26 @@ class ImageProcessingBot(Bot):
 
         # Process the image using your custom methods (e.g., apply filter)
         image.concat(another_image)  # Concatenate the two images
+
+        # Save the processed image to the specified folder
+        processed_image_path = image.save_img()
+
+        if processed_image_path is not None:
+            # Send the processed image back to the user
+            self.send_photo(msg['chat']['id'], processed_image_path)
+
+        self.processing_completed = True
+    def process_image_contur(self, msg):
+        self.processing_completed = False
+
+        # Download the two photos sent by the user
+        image_path = self.download_user_photo(msg)
+
+        # Create two different Img objects from the downloaded images
+        image = Img(image_path)
+
+        # Process the image using your custom methods (e.g., apply filter)
+        image.contour()  # contur the image
 
         # Save the processed image to the specified folder
         processed_image_path = image.save_img()
